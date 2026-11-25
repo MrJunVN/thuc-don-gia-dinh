@@ -77,5 +77,11 @@ Người dùng muốn quét hằng ngày. Đã thử cho GitHub Actions quét: W
 
 **Claude:** Gỡ toàn bộ phần gọi Claude API (ai.js, thư viện SDK, ô nhập khoá, nút quét ảnh, nút gợi ý món). Thay bằng **📋 Dán từ Claude**: trong Project nói "xuất cho app", Claude trả về mã JSON (`{"app":"thuc-don", "sale", "tu_lanh", "goi_y", "doi_mon"}`), copy rồi dán vào app. Định dạng mã nằm trong phần hướng dẫn Project ở CLAUDE_PROJECT.md.
 
+## Trạng thái hiện tại (25/11/2026)
+- Web app: https://mrjunvn.github.io/thuc-don-gia-dinh/ (tự deploy mỗi lần push lên `main`).
+- Không dùng Claude API. Luồng hằng ngày: chat bằng giọng trong Claude Project "Bếp nhà mình" → "xuất cho app" → 📋 Dán từ Claude.
+- Người dùng chưa tạo Project, cần làm theo CLAUDE_PROJECT.md.
+
 ## Việc còn để ngỏ
+- Thử luồng "xuất cho app" với Claude thật, chỉnh lại hướng dẫn Project nếu mã trả về sai định dạng.
 - Các ý tưởng làm tiếp nằm trong README.
