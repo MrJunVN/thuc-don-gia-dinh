@@ -1,5 +1,5 @@
 // Dữ liệu thực đơn — sửa file này để đổi món, giá, danh sách mua.
-// Gia đình: 2 người lớn (36t) + 1 bé 5 tuổi. Ngân sách ~ $150/tuần. Không yến mạch.
+// Gia đình: 2 người lớn (36t) + 1 bé 5 tuổi. Ngân sách ~ $150/tuần. Không yến mạch (không thích, không phải kiêng gluten).
 
 window.APP_DATA = {
   budget: 150,
@@ -113,7 +113,6 @@ window.APP_DATA = {
     "Hộp cơm bé có túi đá (ice pack); cho bé tập tự mở hộp trước.",
     "Sau ~7h tối hay có thịt dán nhãn vàng giảm giá — mua chia túi cấp đông.",
     "Mỗi thứ Tư: app Woolworths → chọn cửa hàng gần nhà → Specials → Half Price / Prices Dropped. Thay món cùng loại (cá ↔ cá, gà ↔ gà).",
-    "South Melbourne Market gần nhà — rau củ thường rẻ hơn, ghé cuối tuần nếu tiện.",
-    "Nếu kiêng gluten: đổi bánh mì, kiểm tra miến, dùng tamari thay xì dầu."
+    "South Melbourne Market gần nhà — rau củ thường rẻ hơn, ghé cuối tuần nếu tiện."
   ]
 };

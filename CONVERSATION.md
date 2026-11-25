@@ -41,7 +41,7 @@
 - T4: yoghurt Hy Lạp + dâu + chuối (tuỳ chọn thêm hạt chia).
 - T6: cháo gạo lứt gà nấm, nấu nồi cơm điện hẹn giờ.
 
-Bỏ yến mạch khỏi danh sách mua, thêm 1kg khoai lang. Còn chờ người dùng trả lời: kiêng yến mạch vì **gluten** hay vì dị ứng? Nếu là gluten thì cần đổi luôn bánh mì, miến và xì dầu.
+Bỏ yến mạch khỏi danh sách mua, thêm 1kg khoai lang.
 
 ## 3. Làm web app
 
@@ -50,7 +50,13 @@ Bỏ yến mạch khỏi danh sách mua, thêm 1kg khoai lang. Còn chờ ngư�
 
 **Claude:** Đã làm web app tĩnh (HTML/CSS/JS, không cần build). Gồm 4 tab: Thực đơn, Đi chợ (check-box + sửa giá + thanh ngân sách), Sơ chế CN, Mẹo. Dữ liệu nằm trong `data.js`. Xem `README.md`.
 
+## 4. Lý do không ăn yến mạch
+
+**Người dùng:**
+> không phải gluten, chỉ không thích thôi
+
+**Claude:** Giữ nguyên bánh mì, miến và xì dầu. Chỉ cần không dùng yến mạch. Đã bỏ mẹo về gluten khỏi app.
+
 ## Việc còn để ngỏ
-- Xác nhận lý do không ăn yến mạch (gluten hay không).
 - Cập nhật thực đơn theo specials Woolworths thực tế. Có thể chụp màn hình trang specials để Claude đổi món.
 - Các ý tưởng làm tiếp nằm trong README.
