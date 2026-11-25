@@ -34,4 +34,4 @@ Toàn bộ món ăn, giá và danh sách mua nằm trong **`data.js`**. Sửa fi
 - [ ] Trang công thức chi tiết cho từng món
 - [ ] Dán danh sách specials của Woolworths vào để tự gợi ý đổi món
 - [ ] Đồng bộ danh sách đi chợ giữa 2 điện thoại
-- [ ] Deploy lên GitHub Pages
+- [x] Deploy lên GitHub Pages (workflow `.github/workflows/pages.yml`, chỉ đưa 4 file app lên web)
