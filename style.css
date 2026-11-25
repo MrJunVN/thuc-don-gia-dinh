@@ -54,3 +54,13 @@ button.link { border: 0; background: none; color: var(--accent); font: inherit; 
 .sale-row:last-child { border-bottom: 0; }
 .sale-row a { color: var(--accent); }
 .sale-row .vn { font-weight: 600; }
+
+.btn { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+.row { display: flex; gap: 8px; margin: 8px 0; }
+.row input { flex: 1; min-width: 0; }
+.row input.qty { flex: 0 0 96px; }
+input[type=text], input:not([type]), input[type=password], textarea { border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 10px; padding: 10px; font: inherit; }
+textarea { width: 100%; margin: 12px 0 8px; resize: vertical; }
+.fridge li { justify-content: space-between; align-items: center; }
+.answer { white-space: pre-wrap; min-height: 0; }
+.answer:empty { display: none; }

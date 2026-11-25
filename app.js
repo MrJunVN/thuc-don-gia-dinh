@@ -111,7 +111,7 @@
   }
   function renderSale() {
     if (!SP || !SP.items) {
-      $("#sale-meta").textContent = "Chưa có dữ liệu sale. Dữ liệu được quét tự động mỗi sáng khi app chạy trên GitHub Pages.";
+      $("#sale-meta").textContent = "Chưa có dữ liệu sale. Chụp màn hình trang Specials trong app Woolworths rồi bấm 📷 bên trên.";
       return;
     }
     const when = SP.updated ? new Date(SP.updated).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" }) : "?";
@@ -123,14 +123,107 @@
       ? `<div class="card">${rows.map(([id, v]) => `<div class="sale-row"><div class="vn">${esc(names[id] || id)}</div>${product(v.specials[0])}</div>`).join("")}</div>`
       : `<p class="muted">Hôm nay không có món nào trong danh sách đang sale.</p>`;
     $("#sale-extras").innerHTML = (SP.extras || []).length
-      ? `<div class="card">${SP.extras.map((p) => `<div class="sale-row"><div class="vn">${esc(p.label)}</div>${product(p)}</div>`).join("")}</div>`
+      ? `<div class="card">${SP.extras.map((p) => `<div class="sale-row"><div class="vn">${esc(p.label || p.name)}</div>${product(p)}</div>`).join("")}</div>`
       : `<p class="muted">Không có gợi ý.</p>`;
   }
-  fetch("specials.json", { cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : null))
-    .then((j) => { SP = j; })
-    .catch(() => {})
-    .finally(() => { renderSale(); renderShop(); });
+  // Dữ liệu sale: ưu tiên kết quả quét ảnh lưu trên máy; không có thì dùng specials.json (nếu có).
+  function salesFromDeals(deals, when) {
+    const items = {}, extras = [];
+    deals.forEach((d) => {
+      const p = { name: d.name, size: d.size, price: d.price, was: d.was, half: d.half, special: true, label: d.label_vi };
+      if (d.match_id && names[d.match_id]) (items[d.match_id] = items[d.match_id] || { specials: [] }).specials.push(p);
+      else extras.push(p);
+    });
+    Object.values(items).forEach((v) => v.specials.sort((a, b) => a.price - b.price));
+    return { updated: when, source: "từ ảnh chụp màn hình app Woolworths", items, extras };
+  }
+  function loadSales() {
+    const mine = store.get("saleScan", null);
+    if (mine && mine.deals) { SP = salesFromDeals(mine.deals, mine.updated); renderSale(); renderShop(); return; }
+    fetch("specials.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { SP = j; })
+      .catch(() => {})
+      .finally(() => { renderSale(); renderShop(); });
+  }
+  loadSales();
+
+  const aiError = (e) => {
+    const m = String(e && e.message || e);
+    if (m === "NO_KEY") return "Chưa có khoá Claude API. Vào tab Mẹo → Cài đặt để nhập khoá.";
+    if (m === "REFUSED") return "Claude từ chối yêu cầu này. Thử lại với ảnh khác.";
+    if (e && e.status === 401) return "Khoá API không đúng. Kiểm tra lại trong tab Mẹo → Cài đặt.";
+    if (e && e.status === 429) return "Gọi hơi nhiều, đợi 1 phút rồi thử lại.";
+    if (e && (e.status === 400) && /credit/i.test(m)) return "Tài khoản API hết tiền. Nạp thêm ở console.anthropic.com.";
+    if (m === "BAD_IMAGE") return "Không đọc được ảnh này.";
+    return "Lỗi: " + m;
+  };
+  const withAI = (fn) => (window.AI ? fn() : window.addEventListener("ai-ready", fn, { once: true }));
+
+  $("#scan-input").addEventListener("change", (e) => {
+    const files = [...e.target.files]; e.target.value = "";
+    if (!files.length) return;
+    const st = $("#scan-status"); st.textContent = `⏳ Đang đọc ${files.length} ảnh… (khoảng 10–30 giây)`;
+    const items = []; D.shopping.forEach((g) => g.items.forEach((it) => items.push({ id: it.id, name: it.name })));
+    withAI(() => window.AI.scanSale(files, items)
+      .then((deals) => {
+        const prev = store.get("saleScan", null);
+        // Cùng ngày thì cộng dồn (chụp nhiều trang), khác ngày thì thay mới.
+        const today = new Date().toDateString();
+        const keep = prev && prev.deals && new Date(prev.updated).toDateString() === today ? prev.deals : [];
+        const seen = new Set(keep.map((d) => d.name + d.price));
+        const all = keep.concat(deals.filter((d) => !seen.has(d.name + d.price)));
+        store.set("saleScan", { updated: new Date().toISOString(), deals: all });
+        st.textContent = `✅ Đọc được ${deals.length} món đang sale.`;
+        loadSales();
+      })
+      .catch((err) => { st.textContent = "⚠️ " + aiError(err); }));
+  });
+  $("#scan-clear").addEventListener("click", () => {
+    store.set("saleScan", null); SP = null; $("#scan-status").textContent = "Đã xoá dữ liệu sale."; loadSales();
+  });
+
+  // Tủ lạnh
+  let fridge = store.get("fridge", []);
+  function renderFridge() {
+    $("#fridge-list").innerHTML = fridge.length
+      ? fridge.map((f, i) => `<li><span>${esc(f.name)}${f.qty ? ` <span class="muted small">${esc(f.qty)}</span>` : ""}</span>
+          <button class="link" data-del="${i}" aria-label="Xoá">Xoá</button></li>`).join("")
+      : `<li class="muted">Chưa có gì. Thêm đồ đang có ở nhà ở ô bên trên.</li>`;
+  }
+  $("#fridge-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#fridge-name").value.trim(); if (!name) return;
+    fridge.push({ name, qty: $("#fridge-qty").value.trim() });
+    store.set("fridge", fridge); $("#fridge-name").value = ""; $("#fridge-qty").value = ""; renderFridge();
+    $("#fridge-name").focus();
+  });
+  $("#fridge-list").addEventListener("click", (e) => {
+    const i = e.target.dataset.del; if (i === undefined) return;
+    fridge.splice(+i, 1); store.set("fridge", fridge); renderFridge();
+  });
+  $("#fridge-ask").addEventListener("click", () => {
+    const out = $("#fridge-answer"); out.textContent = "⏳ Claude đang nghĩ món…";
+    const d = D.week[(new Date().getDay() + 6) % 7];
+    const sales = SP && SP.items ? Object.entries(SP.items).filter(([, v]) => v.specials && v.specials.length)
+      .map(([id, v]) => `${names[id] || id} ${money(v.specials[0].price)}`).concat((SP.extras || []).map((p) => `${p.label || p.name} ${money(p.price)}`)) : [];
+    withAI(() => window.AI.fridgeIdeas({
+      fridge, question: $("#fridge-question").value.trim(),
+      menuToday: `sáng: ${d.breakfast}; trưa: ${d.lunchAdult}; tối: ${d.dinner}`, sales,
+    }).then((t) => { out.textContent = t; }).catch((err) => { out.textContent = "⚠️ " + aiError(err); }));
+  });
+  renderFridge();
+
+  // Cài đặt khoá API
+  function renderKey() {
+    const k = window.AI ? window.AI.getKey() : "";
+    $("#key-status").textContent = k ? `Đã lưu khoá (…${k.slice(-4)}) trên máy này.` : "Chưa có khoá.";
+  }
+  $("#key-save").addEventListener("click", () => withAI(() => {
+    window.AI.setKey($("#key-input").value); $("#key-input").value = ""; renderKey();
+  }));
+  $("#key-remove").addEventListener("click", () => withAI(() => { window.AI.setKey(""); renderKey(); }));
+  withAI(renderKey);
 
   // Tips
   $("#tips-list").innerHTML = D.tips.map((t) => `<li>${esc(t)}</li>`).join("");

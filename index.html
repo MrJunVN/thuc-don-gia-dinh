@@ -14,6 +14,7 @@
     <button data-tab="menu" class="active">Thực đơn</button>
     <button data-tab="sale">🏷️ Đang sale</button>
     <button data-tab="shop">Đi chợ</button>
+    <button data-tab="fridge">🧊 Tủ lạnh</button>
     <button data-tab="prep">Sơ chế CN</button>
     <button data-tab="tips">Mẹo</button>
   </nav>
@@ -26,6 +27,14 @@
   </section>
 
   <section id="tab-sale" class="tab">
+    <div class="card">
+      <label class="btn">📷 Quét ảnh sale
+        <input id="scan-input" type="file" accept="image/*" multiple hidden>
+      </label>
+      <p class="muted small">Chụp màn hình trang <b>Specials</b> hoặc <b>Half Price</b> trong app Woolworths (chọn được nhiều ảnh). Claude đọc ảnh và đánh dấu món đang sale.</p>
+      <p id="scan-status" class="small" aria-live="polite"></p>
+      <button id="scan-clear" class="link small">Xoá dữ liệu sale</button>
+    </div>
     <p class="muted small" id="sale-meta">Đang tải giá sale…</p>
     <div id="sale-list"></div>
     <h3>Gợi ý đổi món (đang sale)</h3>
@@ -50,6 +59,18 @@
     <div id="schedule"></div>
   </section>
 
+  <section id="tab-fridge" class="tab">
+    <form id="fridge-form" class="row">
+      <input id="fridge-name" placeholder="Món, ví dụ: trứng" autocomplete="off" aria-label="Tên món">
+      <input id="fridge-qty" placeholder="Số lượng" autocomplete="off" aria-label="Số lượng" class="qty">
+      <button type="submit" class="btn">Thêm</button>
+    </form>
+    <ul id="fridge-list" class="checks fridge"></ul>
+    <textarea id="fridge-question" rows="2" placeholder="Hỏi thêm (không bắt buộc), ví dụ: tối nay nấu gì cho nhanh?"></textarea>
+    <button id="fridge-ask" class="btn">🍳 Gợi ý món từ đồ đang có</button>
+    <div id="fridge-answer" class="card answer" aria-live="polite"></div>
+  </section>
+
   <section id="tab-prep" class="tab">
     <p class="muted">Khoảng 45 phút chiều Chủ nhật.</p>
     <ul id="prep-list" class="checks"></ul>
@@ -57,10 +78,21 @@
 
   <section id="tab-tips" class="tab">
     <ul id="tips-list" class="tips"></ul>
+    <h3>⚙️ Cài đặt khoá Claude API</h3>
+    <div class="card">
+      <p class="small">Cần cho 📷 Quét ảnh sale và 🍳 Gợi ý món. Khoá chỉ lưu trong trình duyệt trên máy này, không lên GitHub.</p>
+      <p id="key-status" class="small muted"></p>
+      <div class="row">
+        <input id="key-input" type="password" placeholder="sk-ant-..." autocomplete="off" aria-label="Khoá API">
+        <button id="key-save" class="btn">Lưu</button>
+      </div>
+      <button id="key-remove" class="link small">Xoá khoá khỏi máy này</button>
+    </div>
   </section>
 </main>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script type="module" src="ai.js"></script>
 </body>
 </html>

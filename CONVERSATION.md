@@ -57,6 +57,21 @@ Bỏ yến mạch khỏi danh sách mua, thêm 1kg khoai lang.
 
 **Claude:** Giữ nguyên bánh mì, miến và xì dầu. Chỉ cần không dùng yến mạch. Đã bỏ mẹo về gluten khỏi app.
 
+## 5. Deploy GitHub Pages
+Thêm workflow `.github/workflows/pages.yml`, chỉ đưa file của app lên web (không đưa CONVERSATION.md). Xoá địa chỉ nhà khỏi file này và khỏi lịch sử commit, rồi chuyển repo sang Public. App: https://mrjunvn.github.io/thuc-don-gia-dinh/
+
+## 6. Quét sale Woolworths tự động
+Người dùng muốn quét hằng ngày. Đã thử cho GitHub Actions quét: Woolworths chặn (HTTP 403). Không lách hệ thống chống bot, nên đã gỡ việc quét tự động.
+
+## 7. Chạy trên điện thoại và trợ lý giọng nói
+**Người dùng:** muốn tự scan từ app Woolworths trên điện thoại, và có agent nói chuyện bằng giọng nói về đồ có sẵn ở nhà. Dùng Android, chưa có Claude API.
+
+**Claude:**
+- Web app không đọc được dữ liệu của app khác. Thay bằng: chụp màn hình trang Specials → **📷 Quét ảnh sale** trong web app → Claude đọc ảnh và đánh dấu món đang sale.
+- Thêm tab **🧊 Tủ lạnh** + nút **🍳 Gợi ý món**.
+- Cả hai cần khoá Claude API, lưu trong trình duyệt (hướng dẫn trong README).
+- Giọng nói: dùng Claude Project trong app Claude (CLAUDE_PROJECT.md). Nút 🎤 trong web app để làm sau.
+
 ## Việc còn để ngỏ
-- Cập nhật thực đơn theo specials Woolworths thực tế. Có thể chụp màn hình trang specials để Claude đổi món.
+- Nút 🎤 nói chuyện bằng giọng ngay trong web app (Web Speech API, tiếng Việt).
 - Các ý tưởng làm tiếp nằm trong README.

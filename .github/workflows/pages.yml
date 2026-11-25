@@ -27,11 +27,12 @@ jobs:
       - name: Gom file của app
         run: |
           mkdir _site
-          cp index.html style.css app.js data.js _site/
+          cp index.html style.css app.js data.js ai.js _site/
+          cp -r vendor _site/
           if [ -f specials.json ]; then cp specials.json _site/; fi
 
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
       - id: deployment
