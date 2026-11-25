@@ -64,3 +64,5 @@ textarea { width: 100%; margin: 12px 0 8px; resize: vertical; }
 .fridge li { justify-content: space-between; align-items: center; }
 .answer { white-space: pre-wrap; min-height: 0; }
 .answer:empty { display: none; }
+details summary { cursor: pointer; color: var(--accent); margin-top: 6px; }
+.paste-card .btn { width: 100%; }

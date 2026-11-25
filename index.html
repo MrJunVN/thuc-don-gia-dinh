@@ -22,19 +22,23 @@
 
 <main>
   <section id="tab-menu" class="tab active">
+    <div class="card paste-card">
+      <button id="paste-btn" class="btn">📋 Dán từ Claude</button>
+      <p class="muted small">Trong Project <b>Bếp nhà mình</b> của app Claude, nói <b>"xuất cho app"</b>, bấm Copy đoạn mã rồi bấm nút này.</p>
+      <details id="paste-manual">
+        <summary class="small">Không dán tự động được? Dán tay vào đây</summary>
+        <textarea id="paste-text" rows="4" placeholder='{"app":"thuc-don", ...}'></textarea>
+        <button id="paste-apply" class="btn">Cập nhật app</button>
+      </details>
+      <p id="paste-status" class="small" aria-live="polite"></p>
+    </div>
+    <div id="suggest-card"></div>
     <div class="day-pills" id="day-pills"></div>
     <div id="day-card"></div>
   </section>
 
   <section id="tab-sale" class="tab">
-    <div class="card">
-      <label class="btn">📷 Quét ảnh sale
-        <input id="scan-input" type="file" accept="image/*" multiple hidden>
-      </label>
-      <p class="muted small">Chụp màn hình trang <b>Specials</b> hoặc <b>Half Price</b> trong app Woolworths (chọn được nhiều ảnh). Claude đọc ảnh và đánh dấu món đang sale.</p>
-      <p id="scan-status" class="small" aria-live="polite"></p>
-      <button id="scan-clear" class="link small">Xoá dữ liệu sale</button>
-    </div>
+    <p class="muted small">Chụp màn hình trang Specials trong app Woolworths, gửi cho Claude trong Project <b>Bếp nhà mình</b>, nói "xuất cho app", rồi dán mã ở tab Thực đơn.</p>
     <p class="muted small" id="sale-meta">Đang tải giá sale…</p>
     <div id="sale-list"></div>
     <h3>Gợi ý đổi món (đang sale)</h3>
@@ -66,9 +70,7 @@
       <button type="submit" class="btn">Thêm</button>
     </form>
     <ul id="fridge-list" class="checks fridge"></ul>
-    <textarea id="fridge-question" rows="2" placeholder="Hỏi thêm (không bắt buộc), ví dụ: tối nay nấu gì cho nhanh?"></textarea>
-    <button id="fridge-ask" class="btn">🍳 Gợi ý món từ đồ đang có</button>
-    <div id="fridge-answer" class="card answer" aria-live="polite"></div>
+    <p class="muted small">Muốn gợi ý món từ đồ đang có: nói với Claude trong Project <b>Bếp nhà mình</b>. Khi bạn nói "xuất cho app", danh sách này cũng được cập nhật theo.</p>
   </section>
 
   <section id="tab-prep" class="tab">
@@ -78,21 +80,10 @@
 
   <section id="tab-tips" class="tab">
     <ul id="tips-list" class="tips"></ul>
-    <h3>⚙️ Cài đặt khoá Claude API</h3>
-    <div class="card">
-      <p class="small">Cần cho 📷 Quét ảnh sale và 🍳 Gợi ý món. Khoá chỉ lưu trong trình duyệt trên máy này, không lên GitHub.</p>
-      <p id="key-status" class="small muted"></p>
-      <div class="row">
-        <input id="key-input" type="password" placeholder="sk-ant-..." autocomplete="off" aria-label="Khoá API">
-        <button id="key-save" class="btn">Lưu</button>
-      </div>
-      <button id="key-remove" class="link small">Xoá khoá khỏi máy này</button>
-    </div>
   </section>
 </main>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
-<script type="module" src="ai.js"></script>
 </body>
 </html>

@@ -72,6 +72,10 @@ Người dùng muốn quét hằng ngày. Đã thử cho GitHub Actions quét: W
 - Cả hai cần khoá Claude API, lưu trong trình duyệt (hướng dẫn trong README).
 - Giọng nói: dùng Claude Project trong app Claude (CLAUDE_PROJECT.md). Nút 🎤 trong web app để làm sau.
 
+## 8. Bỏ API trả tiền
+**Người dùng:** không muốn trả tiền API hằng tháng. Muốn chat hằng ngày trong Claude Project rồi đưa kết quả lên app.
+
+**Claude:** Gỡ toàn bộ phần gọi Claude API (ai.js, thư viện SDK, ô nhập khoá, nút quét ảnh, nút gợi ý món). Thay bằng **📋 Dán từ Claude**: trong Project nói "xuất cho app", Claude trả về mã JSON (`{"app":"thuc-don", "sale", "tu_lanh", "goi_y", "doi_mon"}`), copy rồi dán vào app. Định dạng mã nằm trong phần hướng dẫn Project ở CLAUDE_PROJECT.md.
+
 ## Việc còn để ngỏ
-- Nút 🎤 nói chuyện bằng giọng ngay trong web app (Web Speech API, tiếng Việt).
 - Các ý tưởng làm tiếp nằm trong README.

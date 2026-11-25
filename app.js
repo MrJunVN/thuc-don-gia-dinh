@@ -26,13 +26,21 @@
   function renderDay() {
     $("#day-pills").innerHTML = D.week.map((d, i) =>
       `<button data-i="${i}" class="${i === dayIdx ? "active" : ""}">${esc(d.short)}</button>`).join("");
-    const d = D.week[dayIdx];
+    const base = D.week[dayIdx];
+    const ov = store.get("menuOverrides", {})[base.short] || {};
+    const d = Object.assign({}, base, ov);
+    const mark = (k) => (ov[k] ? ' <span class="badge">đã đổi</span>' : "");
     const kidLunch = d.lunchKid && d.lunchKid !== d.lunchAdult
-      ? `<span class="kid"><span class="badge">Bé</span>${esc(d.lunchKid)}${d.recess ? ` · <span class="badge">Recess</span>${esc(d.recess)}` : ""}</span>` : "";
+      ? `<span class="kid"><span class="badge">Bé</span>${esc(d.lunchKid)}${mark("lunchKid")}${d.recess ? ` · <span class="badge">Recess</span>${esc(d.recess)}${mark("recess")}` : ""}</span>` : "";
     $("#day-card").innerHTML = `<div class="card"><h2 style="margin:0 0 4px">${esc(d.day)}</h2>
-      <div class="meal"><div class="label">Sáng</div>${esc(d.breakfast)}</div>
-      <div class="meal"><div class="label">Trưa (mang đi)</div>${esc(d.lunchAdult)}${kidLunch}</div>
-      <div class="meal"><div class="label">Tối</div>${esc(d.dinner)}</div></div>`;
+      <div class="meal"><div class="label">Sáng</div>${esc(d.breakfast)}${mark("breakfast")}</div>
+      <div class="meal"><div class="label">Trưa (mang đi)</div>${esc(d.lunchAdult)}${mark("lunchAdult")}${kidLunch}</div>
+      <div class="meal"><div class="label">Tối</div>${esc(d.dinner)}${mark("dinner")}</div>
+      ${Object.keys(ov).length ? '<button class="link small" id="reset-day">Về thực đơn gốc của ngày này</button>' : ""}</div>`;
+    const rd = $("#reset-day");
+    if (rd) rd.addEventListener("click", () => {
+      const all = store.get("menuOverrides", {}); delete all[base.short]; store.set("menuOverrides", all); renderDay();
+    });
   }
   $("#day-pills").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
@@ -148,40 +156,6 @@
   }
   loadSales();
 
-  const aiError = (e) => {
-    const m = String(e && e.message || e);
-    if (m === "NO_KEY") return "Chưa có khoá Claude API. Vào tab Mẹo → Cài đặt để nhập khoá.";
-    if (m === "REFUSED") return "Claude từ chối yêu cầu này. Thử lại với ảnh khác.";
-    if (e && e.status === 401) return "Khoá API không đúng. Kiểm tra lại trong tab Mẹo → Cài đặt.";
-    if (e && e.status === 429) return "Gọi hơi nhiều, đợi 1 phút rồi thử lại.";
-    if (e && (e.status === 400) && /credit/i.test(m)) return "Tài khoản API hết tiền. Nạp thêm ở console.anthropic.com.";
-    if (m === "BAD_IMAGE") return "Không đọc được ảnh này.";
-    return "Lỗi: " + m;
-  };
-  const withAI = (fn) => (window.AI ? fn() : window.addEventListener("ai-ready", fn, { once: true }));
-
-  $("#scan-input").addEventListener("change", (e) => {
-    const files = [...e.target.files]; e.target.value = "";
-    if (!files.length) return;
-    const st = $("#scan-status"); st.textContent = `⏳ Đang đọc ${files.length} ảnh… (khoảng 10–30 giây)`;
-    const items = []; D.shopping.forEach((g) => g.items.forEach((it) => items.push({ id: it.id, name: it.name })));
-    withAI(() => window.AI.scanSale(files, items)
-      .then((deals) => {
-        const prev = store.get("saleScan", null);
-        // Cùng ngày thì cộng dồn (chụp nhiều trang), khác ngày thì thay mới.
-        const today = new Date().toDateString();
-        const keep = prev && prev.deals && new Date(prev.updated).toDateString() === today ? prev.deals : [];
-        const seen = new Set(keep.map((d) => d.name + d.price));
-        const all = keep.concat(deals.filter((d) => !seen.has(d.name + d.price)));
-        store.set("saleScan", { updated: new Date().toISOString(), deals: all });
-        st.textContent = `✅ Đọc được ${deals.length} món đang sale.`;
-        loadSales();
-      })
-      .catch((err) => { st.textContent = "⚠️ " + aiError(err); }));
-  });
-  $("#scan-clear").addEventListener("click", () => {
-    store.set("saleScan", null); SP = null; $("#scan-status").textContent = "Đã xoá dữ liệu sale."; loadSales();
-  });
 
   // Tủ lạnh
   let fridge = store.get("fridge", []);
@@ -202,28 +176,81 @@
     const i = e.target.dataset.del; if (i === undefined) return;
     fridge.splice(+i, 1); store.set("fridge", fridge); renderFridge();
   });
-  $("#fridge-ask").addEventListener("click", () => {
-    const out = $("#fridge-answer"); out.textContent = "⏳ Claude đang nghĩ món…";
-    const d = D.week[(new Date().getDay() + 6) % 7];
-    const sales = SP && SP.items ? Object.entries(SP.items).filter(([, v]) => v.specials && v.specials.length)
-      .map(([id, v]) => `${names[id] || id} ${money(v.specials[0].price)}`).concat((SP.extras || []).map((p) => `${p.label || p.name} ${money(p.price)}`)) : [];
-    withAI(() => window.AI.fridgeIdeas({
-      fridge, question: $("#fridge-question").value.trim(),
-      menuToday: `sáng: ${d.breakfast}; trưa: ${d.lunchAdult}; tối: ${d.dinner}`, sales,
-    }).then((t) => { out.textContent = t; }).catch((err) => { out.textContent = "⚠️ " + aiError(err); }));
-  });
   renderFridge();
 
-  // Cài đặt khoá API
-  function renderKey() {
-    const k = window.AI ? window.AI.getKey() : "";
-    $("#key-status").textContent = k ? `Đã lưu khoá (…${k.slice(-4)}) trên máy này.` : "Chưa có khoá.";
+  // ---- Dán kết quả từ Claude Project ----
+  const DAYS = D.week.map((d) => d.short); // T2..CN
+  const MEALS = { sang: "breakfast", trua: "lunchAdult", trua_be: "lunchKid", recess: "recess", toi: "dinner" };
+  function extractPayload(text) {
+    const a = text.indexOf("{"), b = text.lastIndexOf("}");
+    if (a < 0 || b <= a) throw new Error("Không thấy mã. Hãy copy cả đoạn mã Claude đưa (bắt đầu bằng {).");
+    let j;
+    try { j = JSON.parse(text.slice(a, b + 1)); } catch { throw new Error("Mã bị thiếu hoặc lỗi. Copy lại cả đoạn mã nhé."); }
+    if (j.app !== "thuc-don") throw new Error("Đây không phải mã của app thực đơn.");
+    return j;
   }
-  $("#key-save").addEventListener("click", () => withAI(() => {
-    window.AI.setKey($("#key-input").value); $("#key-input").value = ""; renderKey();
-  }));
-  $("#key-remove").addEventListener("click", () => withAI(() => { window.AI.setKey(""); renderKey(); }));
-  withAI(renderKey);
+  function applyPayload(j) {
+    const done = [];
+    const num = (v) => (typeof v === "number" ? v : v == null || v === "" ? null : parseFloat(String(v).replace(/[^0-9.]/g, "")));
+    if (Array.isArray(j.sale)) {
+      const deals = j.sale.filter((d) => d && d.name && num(d.price) != null).map((d) => ({
+        name: String(d.name), size: d.size || null, price: num(d.price), was: num(d.was), half: !!d.half,
+        match_id: d.match_id && names[d.match_id] ? d.match_id : null, label_vi: d.label_vi || d.name }));
+      const prev = store.get("saleScan", null);
+      const today = new Date().toDateString();
+      const keep = prev && prev.deals && new Date(prev.updated).toDateString() === today ? prev.deals : [];
+      const seen = new Set(keep.map((d) => d.name + d.price));
+      store.set("saleScan", { updated: new Date().toISOString(), deals: keep.concat(deals.filter((d) => !seen.has(d.name + d.price))) });
+      done.push(`${deals.length} món sale`);
+      loadSales();
+    }
+    if (Array.isArray(j.tu_lanh)) {
+      fridge = j.tu_lanh.filter((f) => f && f.name).map((f) => ({ name: String(f.name), qty: f.qty ? String(f.qty) : "" }));
+      store.set("fridge", fridge); renderFridge(); done.push(`tủ lạnh ${fridge.length} món`);
+    }
+    if (Array.isArray(j.doi_mon)) {
+      const ov = store.get("menuOverrides", {}); let n = 0;
+      j.doi_mon.forEach((c) => {
+        const day = String(c.ngay || "").toUpperCase().replace("CHỦ NHẬT", "CN"); const meal = MEALS[c.bua];
+        if (DAYS.includes(day) && meal && c.mon) { (ov[day] = ov[day] || {})[meal] = String(c.mon); n++; }
+      });
+      store.set("menuOverrides", ov); renderDay(); if (n) done.push(`đổi ${n} bữa`);
+    }
+    if (typeof j.goi_y === "string" && j.goi_y.trim()) {
+      store.set("suggest", { text: j.goi_y.trim(), at: new Date().toISOString() }); renderSuggest(); done.push("gợi ý món");
+    }
+    return done;
+  }
+  function handlePaste(text) {
+    const st = $("#paste-status");
+    try {
+      const done = applyPayload(extractPayload(text));
+      st.textContent = done.length ? "✅ Đã cập nhật: " + done.join(", ") + "." : "Mã không có gì để cập nhật.";
+      $("#paste-text").value = ""; $("#paste-manual").open = false;
+    } catch (e) { st.textContent = "⚠️ " + e.message; }
+  }
+  $("#paste-btn").addEventListener("click", async () => {
+    try {
+      const t = await navigator.clipboard.readText();
+      if (!t) throw new Error("empty");
+      handlePaste(t);
+    } catch {
+      $("#paste-manual").open = true; $("#paste-text").focus();
+      $("#paste-status").textContent = "Trình duyệt không cho đọc clipboard. Dán tay vào ô bên dưới (giữ ngón tay → Dán).";
+    }
+  });
+  $("#paste-apply").addEventListener("click", () => handlePaste($("#paste-text").value));
+
+  function renderSuggest() {
+    const sg = store.get("suggest", null);
+    if (!sg) { $("#suggest-card").innerHTML = ""; return; }
+    const when = new Date(sg.at).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" });
+    $("#suggest-card").innerHTML = `<div class="card"><div class="label muted small">💡 GỢI Ý TỪ CLAUDE · ${esc(when)}</div>
+      <div class="answer">${esc(sg.text)}</div><button class="link small" id="suggest-clear">Ẩn gợi ý</button></div>`;
+    $("#suggest-clear").addEventListener("click", () => { store.set("suggest", null); renderSuggest(); });
+  }
+  renderSuggest();
+
 
   // Tips
   $("#tips-list").innerHTML = D.tips.map((t) => `<li>${esc(t)}</li>`).join("");

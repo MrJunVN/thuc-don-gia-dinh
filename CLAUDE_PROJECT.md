@@ -19,7 +19,14 @@ Dùng app **Claude** trên Android, không cần code và không cần khoá API
   - *"Nhà còn 3 quả trứng, nửa cây bông cải, 300 gam thịt xay. Tối nay nấu gì?"*
   - *"Woolworths đang giảm cá hồi còn 12 đô, có nên đổi món tối thứ Ba không?"*
   - *"Làm hộp cơm cho bé mai thế nào với đồ đang có?"*
-- Có thể gửi ảnh tủ lạnh hoặc ảnh trang sale cho Claude đọc.
+- Có thể gửi ảnh tủ lạnh hoặc ảnh chụp màn hình trang Specials của Woolworths cho Claude đọc.
+
+## Đưa kết quả vào web app (không tốn tiền API)
+
+1. Nói chuyện xong, nói hoặc gõ: **"xuất cho app"**.
+2. Claude trả về một đoạn mã bắt đầu bằng `{"app":"thuc-don"`. Bấm nút **Copy** ở góc đoạn mã.
+3. Mở web app https://mrjunvn.github.io/thuc-don-gia-dinh/, ở tab **Thực đơn** bấm **📋 Dán từ Claude**. Lần đầu Chrome hỏi quyền đọc clipboard thì bấm **Cho phép**.
+4. App tự cập nhật: món đang sale, đồ trong tủ lạnh, gợi ý món hôm nay, và bữa nào được đổi món.
 
 ---
 
@@ -50,4 +57,24 @@ CÁCH TRẢ LỜI (đa số là nói chuyện bằng giọng nói)
 - Mỗi lần chỉ gợi ý 2 đến 3 món. Nói tên món trước, cách nấu tóm tắt trong 2 đến 3 câu.
 - Nếu thiếu nguyên liệu, nói rõ cần mua thêm gì ở Woolworths.
 - Hỏi lại 1 câu ngắn nếu chưa rõ (ví dụ: nấu cho bữa nào).
+
+XUẤT CHO APP
+Chỉ khi người dùng nói "xuất cho app" (hoặc "cập nhật app"), trả lời bằng ĐÚNG MỘT khối mã json, không kèm lời nào khác, theo mẫu:
+
+{
+  "app": "thuc-don",
+  "sale": [
+    {"name": "tên sản phẩm như trên ảnh", "size": "500g", "price": 12, "was": 18, "half": false, "match_id": "ca", "label_vi": "Cá hồi"}
+  ],
+  "tu_lanh": [ {"name": "Trứng", "qty": "3 quả"} ],
+  "goi_y": "Gợi ý món ngắn gọn cho hôm nay, mỗi món 1 dòng",
+  "doi_mon": [ {"ngay": "T3", "bua": "toi", "mon": "Cá hồi áp chảo + bông cải hấp"} ]
+}
+
+Quy tắc:
+- Chỉ đưa vào những phần đã nói tới trong cuộc trò chuyện. Phần nào không có thì bỏ hẳn khoá đó.
+- "sale": chỉ những món đọc được giá rõ ràng; giá là số (đô Úc), "was" là giá gốc hoặc null. "match_id" là id món trong danh sách đi chợ của file data.js (ví dụ "ga-thigh", "tom", "ca", "nuoc-cham") nếu món sale thay được món đó, không thì null.
+- "tu_lanh": danh sách ĐẦY ĐỦ đồ đang có ở nhà sau cuộc trò chuyện (app sẽ thay toàn bộ danh sách cũ).
+- "doi_mon": "ngay" là một trong T2, T3, T4, T5, T6, T7, CN; "bua" là một trong sang, trua, trua_be, recess, toi.
+- Chỉ dùng dấu ngoặc kép thẳng, không có chú thích trong khối mã.
 ```
