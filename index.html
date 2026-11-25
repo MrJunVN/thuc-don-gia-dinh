@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thực Đơn Gia Đình</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🍚 Thực đơn gia đình</h1>
+  <p class="sub">2 người lớn + 1 bé · ngân sách <span id="budget-label"></span>/tuần</p>
+  <nav>
+    <button data-tab="menu" class="active">Thực đơn</button>
+    <button data-tab="shop">Đi chợ</button>
+    <button data-tab="prep">Sơ chế CN</button>
+    <button data-tab="tips">Mẹo</button>
+  </nav>
+</header>
+
+<main>
+  <section id="tab-menu" class="tab active">
+    <div class="day-pills" id="day-pills"></div>
+    <div id="day-card"></div>
+  </section>
+
+  <section id="tab-shop" class="tab">
+    <div class="budget-box">
+      <div><span class="muted">Đã tick</span> <strong id="spent">$0</strong></div>
+      <div><span class="muted">Ước tính tuần</span> <strong id="planned">$0</strong></div>
+      <div class="bar"><div id="bar-fill"></div></div>
+    </div>
+    <div class="filter">
+      <button data-trip="all" class="active">Tất cả</button>
+      <button data-trip="cn">Chủ nhật</button>
+      <button data-trip="t4">Thứ Tư</button>
+      <button data-trip="thang">Theo tháng</button>
+    </div>
+    <div id="shop-list"></div>
+    <p class="muted small">Bấm vào giá để sửa theo giá thực tế (lưu trên máy này). <button id="reset-shop" class="link">Bỏ tick tất cả</button></p>
+    <h3>Lịch đi chợ</h3>
+    <div id="schedule"></div>
+  </section>
+
+  <section id="tab-prep" class="tab">
+    <p class="muted">Khoảng 45 phút chiều Chủ nhật.</p>
+    <ul id="prep-list" class="checks"></ul>
+  </section>
+
+  <section id="tab-tips" class="tab">
+    <ul id="tips-list" class="tips"></ul>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
