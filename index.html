@@ -23,8 +23,8 @@
 <main>
   <section id="tab-menu" class="tab active">
     <div class="card paste-card">
-      <button id="paste-btn" class="btn">📋 Dán từ Claude</button>
-      <p class="muted small">Trong Project <b>Bếp nhà mình</b> của app Claude, nói <b>"xuất cho app"</b>, bấm Copy đoạn mã rồi bấm nút này.</p>
+      <button id="paste-btn" class="btn">📋 Dán từ ChatGPT</button>
+      <p class="muted small">Trong Project <b>Bếp nhà mình</b> của ChatGPT, nói <b>"xuất cho app"</b>, bấm Copy đoạn mã rồi bấm nút này.</p>
       <details id="paste-manual">
         <summary class="small">Không dán tự động được? Dán tay vào đây</summary>
         <textarea id="paste-text" rows="4" placeholder='{"app":"thuc-don", ...}'></textarea>
@@ -38,7 +38,7 @@
   </section>
 
   <section id="tab-sale" class="tab">
-    <p class="muted small">Chụp màn hình trang Specials trong app Woolworths, gửi cho Claude trong Project <b>Bếp nhà mình</b>, nói "xuất cho app", rồi dán mã ở tab Thực đơn.</p>
+    <p class="muted small">Chụp màn hình trang Specials trong app Woolworths, gửi cho ChatGPT trong Project <b>Bếp nhà mình</b>, nói "xuất cho app", rồi dán mã ở tab Thực đơn.</p>
     <p class="muted small" id="sale-meta">Đang tải giá sale…</p>
     <div id="sale-list"></div>
     <h3>Gợi ý đổi món (đang sale)</h3>
@@ -70,7 +70,7 @@
       <button type="submit" class="btn">Thêm</button>
     </form>
     <ul id="fridge-list" class="checks fridge"></ul>
-    <p class="muted small">Muốn gợi ý món từ đồ đang có: nói với Claude trong Project <b>Bếp nhà mình</b>. Khi bạn nói "xuất cho app", danh sách này cũng được cập nhật theo.</p>
+    <p class="muted small">Muốn gợi ý món từ đồ đang có: nói với ChatGPT trong Project <b>Bếp nhà mình</b>. Khi bạn nói "xuất cho app", danh sách này cũng được cập nhật theo.</p>
   </section>
 
   <section id="tab-prep" class="tab">
@@ -79,10 +79,10 @@
   </section>
 
   <section id="tab-tips" class="tab">
-    <h3>🛠️ Cài trợ lý bếp (Claude Project)</h3>
+    <h3>🛠️ Cài trợ lý bếp (ChatGPT Project)</h3>
     <div class="card">
       <ol class="small steps">
-        <li>App Claude → <b>Projects</b> → <b>Create project</b>, đặt tên <b>Bếp nhà mình</b>.</li>
+        <li>ChatGPT → <b>Projects</b> → <b>New project</b>, đặt tên <b>Bếp nhà mình</b>.</li>
         <li>Bấm <b>Copy hướng dẫn</b> bên dưới, dán vào mục <b>Instructions</b> của Project.</li>
         <li>Bấm <b>Tải data.js</b>, rồi thêm file đó vào mục <b>Files</b> của Project.</li>
         <li>Mở chat mới trong Project, bấm nút giọng nói để nói chuyện. Muốn cập nhật app thì nói <b>"xuất cho app"</b>.</li>

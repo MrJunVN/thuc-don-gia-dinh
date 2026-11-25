@@ -178,12 +178,12 @@
   });
   renderFridge();
 
-  // ---- Dán kết quả từ Claude Project ----
+  // ---- Dán kết quả từ ChatGPT Project ----
   const DAYS = D.week.map((d) => d.short); // T2..CN
   const MEALS = { sang: "breakfast", trua: "lunchAdult", trua_be: "lunchKid", recess: "recess", toi: "dinner" };
   function extractPayload(text) {
     const a = text.indexOf("{"), b = text.lastIndexOf("}");
-    if (a < 0 || b <= a) throw new Error("Không thấy mã. Hãy copy cả đoạn mã Claude đưa (bắt đầu bằng {).");
+    if (a < 0 || b <= a) throw new Error("Không thấy mã. Hãy copy cả đoạn mã ChatGPT đưa (bắt đầu bằng {).");
     let j;
     try { j = JSON.parse(text.slice(a, b + 1)); } catch { throw new Error("Mã bị thiếu hoặc lỗi. Copy lại cả đoạn mã nhé."); }
     if (j.app !== "thuc-don") throw new Error("Đây không phải mã của app thực đơn.");
@@ -245,7 +245,7 @@
     const sg = store.get("suggest", null);
     if (!sg) { $("#suggest-card").innerHTML = ""; return; }
     const when = new Date(sg.at).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" });
-    $("#suggest-card").innerHTML = `<div class="card"><div class="label muted small">💡 GỢI Ý TỪ CLAUDE · ${esc(when)}</div>
+    $("#suggest-card").innerHTML = `<div class="card"><div class="label muted small">💡 GỢI Ý TỪ CHATGPT · ${esc(when)}</div>
       <div class="answer">${esc(sg.text)}</div><button class="link small" id="suggest-clear">Ẩn gợi ý</button></div>`;
     $("#suggest-clear").addEventListener("click", () => { store.set("suggest", null); renderSuggest(); });
   }
@@ -259,7 +259,7 @@
       const t = await (await fetch("project-instructions.txt", { cache: "no-store" })).text();
       await navigator.clipboard.writeText(t);
       st.textContent = "✅ Đã copy. Giờ dán vào mục Instructions của Project.";
-    } catch { st.textContent = "⚠️ Không copy được. Mở CLAUDE_PROJECT.md trên GitHub để copy tay."; }
+    } catch { st.textContent = "⚠️ Không copy được. Mở project-instructions.txt trên GitHub để copy tay."; }
   });
 
   // Tips

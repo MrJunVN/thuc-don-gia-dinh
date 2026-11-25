@@ -1,6 +1,6 @@
 # Lịch sử trao đổi với Claude (21/11/2026)
 
-> Dùng file này để làm tiếp ở nhà: mở Claude Code trong thư mục repo và nói *"đọc CONVERSATION.md rồi làm tiếp app"*.
+> Muốn làm tiếp: xem **TAI_LIEU_BAN_GIAO.md** (bản tóm tắt đầy đủ để đưa cho ChatGPT).
 
 ---
 
@@ -77,12 +77,17 @@ Người dùng muốn quét hằng ngày. Đã thử cho GitHub Actions quét: W
 
 **Claude:** Gỡ toàn bộ phần gọi Claude API (ai.js, thư viện SDK, ô nhập khoá, nút quét ảnh, nút gợi ý món). Thay bằng **📋 Dán từ Claude**: trong Project nói "xuất cho app", Claude trả về mã JSON (`{"app":"thuc-don", "sale", "tu_lanh", "goi_y", "doi_mon"}`), copy rồi dán vào app. Định dạng mã nằm trong phần hướng dẫn Project ở CLAUDE_PROJECT.md.
 
+## 9. Chuyển sang ChatGPT
+**Người dùng:** tài khoản Claude là của công ty, muốn chuyển hết tài liệu để dùng với ChatGPT.
+
+**Claude:** Đổi chữ trong app sang ChatGPT (📋 Dán từ ChatGPT), đổi hướng dẫn trợ lý bếp sang ChatGPT Project (`TRO_LY_BEP_CHATGPT.md`), viết `TAI_LIEU_BAN_GIAO.md` gom toàn bộ bối cảnh, quyết định, cấu trúc app và việc làm tiếp.
+
 ## Trạng thái hiện tại (25/11/2026)
 - Web app: https://mrjunvn.github.io/thuc-don-gia-dinh/ (tự deploy mỗi lần push lên `main`).
-- Không dùng Claude API. Luồng hằng ngày: chat bằng giọng trong Claude Project "Bếp nhà mình" → "xuất cho app" → 📋 Dán từ Claude.
+- Không dùng API trả tiền. Luồng hằng ngày: chat bằng giọng trong ChatGPT Project "Bếp nhà mình" → "xuất cho app" → 📋 Dán từ ChatGPT.
 - Tab Mẹo có mục 🛠️ Cài trợ lý bếp: nút Copy hướng dẫn (lấy từ `project-instructions.txt`) và Tải data.js để tạo Project nhanh trên điện thoại.
-- Đã thử: Claude (đóng vai Project) trả lời "xuất cho app" theo đúng hướng dẫn → dán vào app cập nhật đủ sale, tủ lạnh, gợi ý, đổi món.
+- Đã thử: trợ lý AI (đóng vai Project) trả lời "xuất cho app" theo đúng hướng dẫn → dán vào app cập nhật đủ sale, tủ lạnh, gợi ý, đổi món.
 
 ## Việc còn để ngỏ
-- Người dùng tạo Project trên điện thoại và thử với cuộc trò chuyện thật; chỉnh `project-instructions.txt` nếu mã trả về sai định dạng.
+- Người dùng tạo ChatGPT Project và thử với cuộc trò chuyện thật; chỉnh `project-instructions.txt` nếu mã trả về sai định dạng.
 - Các ý tưởng làm tiếp nằm trong README.
