@@ -1,18 +1,21 @@
-name: Deploy GitHub Pages
+name: Quét sale & deploy GitHub Pages
 
 on:
   push:
     branches: [main]
+  schedule:
+    # 19:17 UTC = khoảng 6h sáng giờ Melbourne (mùa hè, AEDT). Mùa đông là 5h sáng.
+    - cron: "17 19 * * *"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # để lưu specials.json vào repo
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -22,11 +25,35 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      # Chỉ đưa file của app lên web; KHÔNG đưa CONVERSATION.md (có địa chỉ nhà) hay README.
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cài Playwright
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+
+      - name: Quét giá Woolworths
+        continue-on-error: true
+        run: python scripts/scan_specials.py specials.json
+
+      - name: Lưu specials.json vào repo (nếu có thay đổi)
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add specials.json
+          git diff --cached --quiet || (git commit -m "Cập nhật giá sale Woolworths" && git push)
+
+      # Chỉ đưa file của app lên web; KHÔNG đưa CONVERSATION.md hay README.
       - name: Gom file của app
         run: |
           mkdir _site
           cp index.html style.css app.js data.js _site/
+          if [ -f specials.json ]; then cp specials.json _site/; fi
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

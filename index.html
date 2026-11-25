@@ -12,6 +12,7 @@
   <p class="sub">2 người lớn + 1 bé · ngân sách <span id="budget-label"></span>/tuần</p>
   <nav>
     <button data-tab="menu" class="active">Thực đơn</button>
+    <button data-tab="sale">🏷️ Đang sale</button>
     <button data-tab="shop">Đi chợ</button>
     <button data-tab="prep">Sơ chế CN</button>
     <button data-tab="tips">Mẹo</button>
@@ -22,6 +23,13 @@
   <section id="tab-menu" class="tab active">
     <div class="day-pills" id="day-pills"></div>
     <div id="day-card"></div>
+  </section>
+
+  <section id="tab-sale" class="tab">
+    <p class="muted small" id="sale-meta">Đang tải giá sale…</p>
+    <div id="sale-list"></div>
+    <h3>Gợi ý đổi món (đang sale)</h3>
+    <div id="sale-extras"></div>
   </section>
 
   <section id="tab-shop" class="tab">
