@@ -252,6 +252,16 @@
   renderSuggest();
 
 
+  // Copy hướng dẫn Project
+  $("#copy-instr").addEventListener("click", async () => {
+    const st = $("#copy-status");
+    try {
+      const t = await (await fetch("project-instructions.txt", { cache: "no-store" })).text();
+      await navigator.clipboard.writeText(t);
+      st.textContent = "✅ Đã copy. Giờ dán vào mục Instructions của Project.";
+    } catch { st.textContent = "⚠️ Không copy được. Mở CLAUDE_PROJECT.md trên GitHub để copy tay."; }
+  });
+
   // Tips
   $("#tips-list").innerHTML = D.tips.map((t) => `<li>${esc(t)}</li>`).join("");
 })();

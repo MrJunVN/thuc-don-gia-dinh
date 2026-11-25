@@ -66,3 +66,6 @@ textarea { width: 100%; margin: 12px 0 8px; resize: vertical; }
 .answer:empty { display: none; }
 details summary { cursor: pointer; color: var(--accent); margin-top: 6px; }
 .paste-card .btn { width: 100%; }
+.steps { padding-left: 20px; margin: 0 0 8px; }
+.steps li { margin: 4px 0; }
+a.btn { text-decoration: none; text-align: center; }

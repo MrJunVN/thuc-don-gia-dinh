@@ -80,8 +80,9 @@ Người dùng muốn quét hằng ngày. Đã thử cho GitHub Actions quét: W
 ## Trạng thái hiện tại (25/11/2026)
 - Web app: https://mrjunvn.github.io/thuc-don-gia-dinh/ (tự deploy mỗi lần push lên `main`).
 - Không dùng Claude API. Luồng hằng ngày: chat bằng giọng trong Claude Project "Bếp nhà mình" → "xuất cho app" → 📋 Dán từ Claude.
-- Người dùng chưa tạo Project, cần làm theo CLAUDE_PROJECT.md.
+- Tab Mẹo có mục 🛠️ Cài trợ lý bếp: nút Copy hướng dẫn (lấy từ `project-instructions.txt`) và Tải data.js để tạo Project nhanh trên điện thoại.
+- Đã thử: Claude (đóng vai Project) trả lời "xuất cho app" theo đúng hướng dẫn → dán vào app cập nhật đủ sale, tủ lạnh, gợi ý, đổi món.
 
 ## Việc còn để ngỏ
-- Thử luồng "xuất cho app" với Claude thật, chỉnh lại hướng dẫn Project nếu mã trả về sai định dạng.
+- Người dùng tạo Project trên điện thoại và thử với cuộc trò chuyện thật; chỉnh `project-instructions.txt` nếu mã trả về sai định dạng.
 - Các ý tưởng làm tiếp nằm trong README.

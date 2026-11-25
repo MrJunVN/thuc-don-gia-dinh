@@ -79,6 +79,21 @@
   </section>
 
   <section id="tab-tips" class="tab">
+    <h3>🛠️ Cài trợ lý bếp (Claude Project)</h3>
+    <div class="card">
+      <ol class="small steps">
+        <li>App Claude → <b>Projects</b> → <b>Create project</b>, đặt tên <b>Bếp nhà mình</b>.</li>
+        <li>Bấm <b>Copy hướng dẫn</b> bên dưới, dán vào mục <b>Instructions</b> của Project.</li>
+        <li>Bấm <b>Tải data.js</b>, rồi thêm file đó vào mục <b>Files</b> của Project.</li>
+        <li>Mở chat mới trong Project, bấm nút giọng nói để nói chuyện. Muốn cập nhật app thì nói <b>"xuất cho app"</b>.</li>
+      </ol>
+      <div class="row">
+        <button id="copy-instr" class="btn">Copy hướng dẫn</button>
+        <a class="btn" href="data.js" download="data.js">Tải data.js</a>
+      </div>
+      <p id="copy-status" class="small" aria-live="polite"></p>
+    </div>
+    <h3>Mẹo</h3>
     <ul id="tips-list" class="tips"></ul>
   </section>
 </main>
